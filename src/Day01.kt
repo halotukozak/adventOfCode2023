@@ -26,11 +26,15 @@ fun main() {
         }
     }
 
-    // test if implementation meets criteria from the description, like:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
+    val day = "Day01"
+    val input = readInput(day)
 
-    val input = readInput("Day01")
-    part1(input).println()
-    part2(input).println()
+    part1(input).let {
+        check(it == 54338)
+        println("$day Part 1: $it")
+    }
+    part1(input).let {
+        check(it == 53389)
+        println("$day 01 Part 2: $it")
+    }
 }
