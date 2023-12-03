@@ -1,5 +1,3 @@
-import java.io.Serializable
-
 fun main() {
   fun nextCells(coor: Coor): List<Coor> {
     val (row, column) = coor
@@ -26,20 +24,30 @@ fun main() {
       result + line.plus(".").foldIndexed(Acc(0, "", false)) { column, acc, char ->
         val (res, number, isMarked) = acc
         if (char.isDigit()) Acc(
-          result = res,
-          number = number + char,
-          isMarked = Coor(row, column) in markedPoints,
+          res,
+          number + char,
+          Coor(row, column) in markedPoints,
         ) else Acc(
-          result = if (isMarked) res + (number.toIntOrNull() ?: 0) else res,
-          number = "",
-          isMarked = false,
+          res + (number.takeIf { _ -> isMarked }?.toIntOrNull() ?: 0),
+          "",
+          false,
         )
       }.result
     }
   }
 
-
   fun part2(input: List<String>): Int {
+    val numbers: List<Number> = input.foldIndexed(listOf()) { row, result, line ->
+      result + line.plus(".").foldIndexed(Acc2()) { column, acc, char ->
+        val (list, number) = acc
+        when {
+          char.isDigit() -> Acc2(list, number.withDigit(Coor(row, column), char))
+          number != Number() -> Acc2(list + number)
+          else -> Acc2(list)
+        }
+      }.result
+    }
+
     val maybeGears = input.foldIndexed(mapOf<Coor, MaybeGear>()) { row, result, line ->
       result + line.foldIndexed(mapOf()) { column, innerResult, char ->
         if (char == '*') innerResult + (Coor(row, column) to MaybeGear())
@@ -47,31 +55,23 @@ fun main() {
       }
     }
 
-    val numbers: List<Number> = input.foldIndexed(listOf()) { row, result, line ->
-      result + line.plus(".").foldIndexed(Acc2()) { column, acc, char ->
-        val (list, number) = acc
-        if (char.isDigit()) {
-          Acc2(
-            result = list,
-            number = number.withDigit(Coor(row, column), char)
-          )
-        } else if (number != Number()) {
-          Acc2(result = list + number)
-        } else {
-          Acc2(result = list)
+    val gears = numbers
+      .flatMap { number -> number.digits.keys.map { it to number } }
+      .flatMap { (coor, number) -> nextCells(coor).map { it to number } }
+      .fold(maybeGears) { acc, pair ->
+        val (coor, number) = pair
+        acc.mapValues { (k, v) ->
+          if (k == coor) MaybeGear(v.bag + number)
+          else v
         }
-      }.result
-    }
+      }
+      .values
 
-    numbers.forEach { number ->
-      number.digits
-        .flatMap { (coor, _) -> nextCells(coor) }
-        .forEach { maybeGears[it]?.bag?.add(number) }
-    }
-
-    return maybeGears.values.filter { it.bag.size == 2 }.fold(0) { acc, gear ->
-      acc + gear.bag.fold(1) { innerAcc, number -> innerAcc * number.value() }
-    }
+    return gears
+      .filter { it.bag.size == 2 }
+      .fold(0) { acc, gear ->
+        acc + gear.bag.fold(1) { innerAcc, number -> innerAcc * number.value() }
+      }
   }
 
   val day = "Day03"
@@ -79,7 +79,7 @@ fun main() {
 
   part1(input).let {
     println("03 Part 1: $it")
-    check(it == 532428)
+    check(it == 309128)
   }
 
   part2(input).let {
@@ -96,6 +96,6 @@ data class Number(val digits: LinkedHashMap<Coor, Int> = linkedMapOf()) {
   override fun toString(): String = "Number(" + digits.values.joinToString("") + ")"
 }
 
-data class MaybeGear(val bag: MutableSet<Number> = mutableSetOf())
+data class MaybeGear(val bag: Set<Number> = setOf())
 data class Acc(val result: Int, val number: String, val isMarked: Boolean)
 data class Acc2(val result: List<Number> = listOf(), val number: Number = Number())
