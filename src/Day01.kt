@@ -33,7 +33,7 @@ fun main() {
         check(it == 54338)
         println("$day Part 1: $it")
     }
-    part1(input).let {
+    part2(input).let {
         check(it == 53389)
         println("$day 01 Part 2: $it")
     }
