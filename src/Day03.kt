@@ -1,3 +1,8 @@
+import Day03.Acc
+import Day03.Acc2
+import Day03.MaybeGear
+import Day03.Number
+
 fun main() {
   fun nextCells(coor: Coor): List<Coor> {
     val (row, column) = coor
@@ -88,14 +93,16 @@ fun main() {
   }
 }
 
-typealias Coor = Pair<Int, Int>
+object Day03 {
+  data class Number(val digits: LinkedHashMap<Coor, Int> = linkedMapOf()) {
+    fun withDigit(coor: Coor, digit: Char): Number = this.copy(digits = digits.also { it[coor] = digit.digitToInt() })
+    fun value(): Int = digits.toList().fold("") { acc, pair -> acc + pair.second }.toInt()
+    override fun toString(): String = "Number(" + digits.values.joinToString("") + ")"
+  }
 
-data class Number(val digits: LinkedHashMap<Coor, Int> = linkedMapOf()) {
-  fun withDigit(coor: Coor, digit: Char): Number = this.copy(digits = digits.also { it[coor] = digit.digitToInt() })
-  fun value(): Int = digits.toList().fold("") { acc, pair -> acc + pair.second }.toInt()
-  override fun toString(): String = "Number(" + digits.values.joinToString("") + ")"
+  data class MaybeGear(val bag: Set<Number> = setOf())
+  data class Acc(val result: Int, val number: String, val isMarked: Boolean)
+  data class Acc2(val result: List<Number> = listOf(), val number: Number = Number())
 }
 
-data class MaybeGear(val bag: Set<Number> = setOf())
-data class Acc(val result: Int, val number: String, val isMarked: Boolean)
-data class Acc2(val result: List<Number> = listOf(), val number: Number = Number())
+typealias Coor = Pair<Int, Int>
