@@ -1,6 +1,3 @@
-import utils.rangeTo
-import java.math.BigInteger
-
 fun main() {
   fun part1(input: List<String>): Int =
     input
@@ -20,13 +17,10 @@ fun main() {
 
   fun part2(input: List<String>): Int =
     input
-      .map {
-        it.filter(Char::isDigit)
-          .toBigInteger()
-      }
-      .let { it[0] to (it[1]) }
+      .map { it.filter(Char::isDigit).toLong() }
+      .let { it[0] to it[1] }
       .let { (time, distance) ->
-        (BigInteger.ZERO..time)
+        (0L..time)
           .fold(0) { innerAcc, holdingTime ->
             if (holdingTime * (time - holdingTime) > distance) innerAcc + 1
             else innerAcc
