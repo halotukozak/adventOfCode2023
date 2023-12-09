@@ -1,4 +1,7 @@
-import Direction.L
+import Day08.Children
+import Day08.Direction
+import Day08.Direction.L
+import Day08.toChildren
 
 fun main() {
 
@@ -68,11 +71,13 @@ fun main() {
   }
 }
 
-data class Children(val left: String, val right: String)
+private object Day08 {
+  data class Children(val left: String, val right: String)
 
-private fun String.toChildren(): Children =
-  split("[^A-Z0-9]+".toRegex()).filterNot(String::isBlank).let { Children(it[0], it[1]) }
+  fun String.toChildren(): Children =
+    split("[^A-Z0-9]+".toRegex()).filterNot(String::isBlank).let { Children(it[0], it[1]) }
 
-enum class Direction {
-  L, R
+  enum class Direction {
+    L, R
+  }
 }

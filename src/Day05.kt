@@ -136,6 +136,6 @@ data class Range(val first: Long, val last: Long) {
 
 }
 
-object Day05 {
+private object Day05 {
   data class Acc(val initial: List<Range> = emptyList(), val converted: List<Range> = emptyList())
 }

@@ -1,4 +1,5 @@
 
+import Day07.Joker
 import HandType.*
 import kotlin.reflect.KClass
 
@@ -80,17 +81,19 @@ sealed class Card(private val ordinal: Int, val symbol: Char) : Comparable<Card>
 
 }
 
-data object Two : Card(2)
-data object Three : Card(3)
-data object Four : Card(4)
-data object Five : Card(5)
-data object Six : Card(6)
-data object Seven : Card(7)
-data object Eight : Card(8)
-data object Nine : Card(9)
-data object Ten : Card(10, 'T')
-data object Jack : Card(11, 'J')
-data object Queen : Card(12, 'Q')
-data object King : Card(13, 'K')
-data object Ace : Card(14, 'A')
-data object Joker : Card(0, 'J')
+private object Day07 {
+  data object Two : Card(2)
+  data object Three : Card(3)
+  data object Four : Card(4)
+  data object Five : Card(5)
+  data object Six : Card(6)
+  data object Seven : Card(7)
+  data object Eight : Card(8)
+  data object Nine : Card(9)
+  data object Ten : Card(10, 'T')
+  data object Jack : Card(11, 'J')
+  data object Queen : Card(12, 'Q')
+  data object King : Card(13, 'K')
+  data object Ace : Card(14, 'A')
+  data object Joker : Card(0, 'J')
+}

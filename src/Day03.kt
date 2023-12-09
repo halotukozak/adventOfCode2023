@@ -93,7 +93,7 @@ fun main() {
   }
 }
 
-object Day03 {
+private object Day03 {
   data class Number(val digits: LinkedHashMap<Coor, Int> = linkedMapOf()) {
     fun withDigit(coor: Coor, digit: Char): Number = this.copy(digits = digits.also { it[coor] = digit.digitToInt() })
     fun value(): Int = digits.toList().fold("") { acc, pair -> acc + pair.second }.toInt()
