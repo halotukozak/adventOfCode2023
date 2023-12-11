@@ -1,4 +1,4 @@
-
+import Day07.Card
 import Day07.Joker
 import HandType.*
 import kotlin.reflect.KClass
@@ -39,7 +39,8 @@ data class Hand(val type: HandType, val cards: List<Card>) : Comparable<Hand> {
       .filterNot { it is Joker }
       .groupBy { it::class }
       .values
-      .sortedBy { it.size }.let {
+      .sortedBy { it.size }
+      .let {
         when (it.size) {
           0, 1 -> FiveOfAKind
           2 -> if (it[0].size == 1) FourOfAKind else FullHouse
@@ -63,25 +64,26 @@ data class Hand(val type: HandType, val cards: List<Card>) : Comparable<Hand> {
   }
 }
 
-sealed class Card(private val ordinal: Int, val symbol: Char) : Comparable<Card> {
+object Day07 {
+  sealed class Card(private val ordinal: Int, val symbol: Char) : Comparable<Card> {
 
 
-  constructor(ordinal: Int) : this(ordinal, ordinal.digitToChar())
+    constructor(ordinal: Int) : this(ordinal, ordinal.digitToChar())
 
-  companion object {
+    companion object {
 
-    private val values = Card::class.sealedSubclasses.mapNotNull(KClass<out Card>::objectInstance)
+      private val values = Card::class.sealedSubclasses.mapNotNull(KClass<out Card>::objectInstance)
 
-    fun valueOf(c: Char, jokersEnabled: Boolean = false): Card = if (jokersEnabled && c == Joker.symbol) Joker
-    else values.find { it.symbol == c && it !is Joker }
-      ?: throw IllegalArgumentException("Provide one of the valid values: ${values.map(Card::symbol)}")
+      fun valueOf(c: Char, jokersEnabled: Boolean = false): Card =
+        if (jokersEnabled && c == Joker.symbol) Joker
+        else values.find { it.symbol == c && it !is Joker }
+          ?: throw IllegalArgumentException("Provide one of the valid values: ${values.map(Card::symbol)}")
+    }
+
+    override fun compareTo(other: Card): Int = this.ordinal.compareTo(other.ordinal)
+
   }
 
-  override fun compareTo(other: Card): Int = this.ordinal.compareTo(other.ordinal)
-
-}
-
-private object Day07 {
   data object Two : Card(2)
   data object Three : Card(3)
   data object Four : Card(4)
